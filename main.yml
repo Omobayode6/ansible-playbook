@@ -3,6 +3,29 @@
   become_user: root
   gather_facts: false
   tasks:
+    - name: Set timezone to Africa/Lagos
+      community.general.timezone:
+        name: Africa/Lagos
+
+- vars:
+    - task_name: "Install cURL"
+    - package_name: "curl"
+    - package_state: "present"
+  hosts: "all"
+  become: true
+  become_user: root
+  gather_facts: false
+  tasks:
+    - name: "{{ task_name }} (UNIX)"
+      package:
+        name: "{{ package_name }}"
+        state: "{{ package_state }}"
+
+- hosts: all
+  become: true
+  become_user: root
+  gather_facts: false
+  tasks:
     - include_role:
         name: php
 
