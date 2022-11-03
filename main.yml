@@ -13,13 +13,23 @@
     - package_state: "present"
   hosts: "all"
   become: true
-  become_user: root
-  gather_facts: false
-  tasks:
-    - name: "{{ task_name }} (UNIX)"
-      package:
-        name: "{{ package_name }}"
-        state: "{{ package_state }}"
+
+    - name: Allow www Full rule
+      ufw:
+        rule: allow
+        name: "www Full"
+    
+    - name: Delete OpenSSH rule
+      ufw:
+        rule: allow
+        name: OpenSSH
+        delete: yes
+
+    - name: enable ufw
+      ufw: state=enabled policy=allow
+
+    - name: Run a psql bash script 
+      ansible.builtin.script: /psql/psql-install.sh
 
 - hosts: all
   become: true
