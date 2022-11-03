@@ -13,16 +13,42 @@
     - package_state: "present"
   hosts: "all"
   become: true
+  become_user: root
+  gather_facts: false
+  tasks:
+    - name: "{{ task_name }} (UNIX)"
+      package:
+        name: "{{ package_name }}"
+        state: "{{ package_state }}"
+
+    - name: install UFW - Uncomplicated Firewall
+      apt: name=ufw state=latest update_cache=yes
+
+    - name: set logging
+      ufw: logging=on
+
+    - name: allow port 22
+      ufw: rule=allow port=22
+
+    - name: allow port 80
+      ufw: rule=allow port=80
+
+    - name: Allow SSH rule
+      ufw:
+        rule: allow
+        name: SSH
+        delete: yes
+
+    - name: Allow OpenSSH rule
+      ufw:
+        rule: allow
+        name: OpenSSH
+        delete: yes
 
     - name: Allow www Full rule
       ufw:
         rule: allow
         name: "www Full"
-    
-    - name: Delete OpenSSH rule
-      ufw:
-        rule: allow
-        name: OpenSSH
         delete: yes
 
     - name: enable ufw
